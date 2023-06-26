@@ -1,19 +1,20 @@
 package handlers
 
 import (
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 	"net/http"
 	"p3/datamodels"
-	"p3/logic"
 )
 
 type EmployeeHandler struct {
-	eLogic *logic.EmployeeLogic
+	dbInstance *gorm.DB
 }
 
-func NewEmployeeHandler(router *echo.Echo, logic *logic.EmployeeLogic) {
+func NewEmployeeHandler(router *echo.Echo, db *gorm.DB) {
 	handler := &EmployeeHandler{
-		eLogic: logic,
+		dbInstance: db,
 	}
 	router.POST("/employee", handler.AddEmployee)
 	router.GET("/employee", handler.GetEmployee)
@@ -28,22 +29,30 @@ func (h *EmployeeHandler) AddEmployee(c echo.Context) error {
 	if err = c.Validate(e); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
-	/*err := json.NewDecoder(c.Request().Body).Decode(&e)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error)
-	}*/
-	res, eErr := h.eLogic.AddEmployee(&e)
-	if eErr != "" {
-		return c.JSON(http.StatusBadRequest, eErr)
+	if h.dbInstance == nil {
+		return c.JSON(http.StatusBadRequest, "Connection Error")
 	}
-	return c.JSON(http.StatusOK, res)
+	if mErr := h.dbInstance.AutoMigrate(&datamodels.Employee{}); mErr != nil {
+		return c.JSON(http.StatusBadRequest, mErr)
+	}
+	e.ID = uuid.New()
+	if err := h.dbInstance.Create(e).Error; err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, e)
 }
 func (h *EmployeeHandler) GetEmployee(c echo.Context) error {
 
 	emailId := c.QueryParams().Get("email")
-	res, err := h.eLogic.GetEmployee(emailId)
-	if res != nil {
-		return c.JSON(http.StatusOK, res)
+	if h.dbInstance == nil {
+		return c.JSON(http.StatusBadRequest, "Connection Error")
 	}
-	return c.JSON(http.StatusForbidden, err)
+	var emp *datamodels.Employee
+	// Get first matched record
+	h.dbInstance.Where("email = ?", emailId).First(&emp)
+	if emp == nil {
+		return c.JSON(http.StatusForbidden, "Data not found")
+	}
+	return c.JSON(http.StatusOK, emp)
+
 }
