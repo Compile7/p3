@@ -22,7 +22,7 @@ body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1;
   font-weight: 400;
-  color-scheme: light dark;
+  // color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: $gray-200;
   font-synthesis: none;
@@ -55,6 +55,8 @@ h1 {
 }
 p {
   margin: 0;
+  color: $gray-700;
+
 }
 @media (prefers-color-scheme: light) {
   :root {

@@ -1,4 +1,4 @@
-import "./review.scss";
+// import "./review.scss";
 import Rating from "react-rating";
 import Header from "../Header";
 import Footer from "../Footer";

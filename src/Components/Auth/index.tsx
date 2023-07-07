@@ -1,22 +1,22 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./auth.scss";
 import Logo from "../../assets/logo.svg";
 import { User } from "../User"; // component display user (see detail on /example directory)
-import { LoginSocialGoogle } from "reactjs-social-login";
+// import { LoginSocialGoogle } from "reactjs-social-login";
 
-// CUSTOMIZE ANY UI BUTTON
-import {
-  //   FacebookLoginButton,
-  GoogleLoginButton,
-  //   GithubLoginButton,
-  //   AmazonLoginButton,
-  //   InstagramLoginButton,
-  //   LinkedInLoginButton,
-  //   MicrosoftLoginButton,
-  //   TwitterLoginButton,
-  //   AppleLoginButton,
-} from "react-social-login-buttons";
-import { IdTokenClient } from "google-auth-library";
+// // CUSTOMIZE ANY UI BUTTON
+// import {
+//   //   FacebookLoginButton,
+//   GoogleLoginButton,
+//   //   GithubLoginButton,
+//   //   AmazonLoginButton,
+//   //   InstagramLoginButton,
+//   //   LinkedInLoginButton,
+//   //   MicrosoftLoginButton,
+//   //   TwitterLoginButton,
+//   //   AppleLoginButton,
+// } from "react-social-login-buttons";
+import useFetch from "../../Hooks/useFetch";
 
 // import { ReactComponent as PinterestLogo } from './assets/pinterest.svg'
 // import { ReactComponent as TiktokLogo } from './assets/tiktok.svg'
@@ -26,12 +26,35 @@ import { IdTokenClient } from "google-auth-library";
 // const REDIRECT_URI = window.location.href;
 
 const Auth = () => {
+    const { handleGoogle, loading, error } = useFetch(
+      "http://localhost:5152/login"
+    );
+  
+    useEffect(() => {
+      /* global google */
+      const google = (window as any).google
+      if (google) {
+        google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_APP_GG_APP_ID,
+          callback: handleGoogle,
+        });
+  
+        google.accounts.id.renderButton(document.getElementById("loginDiv"), {
+          // type: "standard",
+          theme: "filled_blue",
+          // size: "small",
+          text: "signin_with",
+          
+          // shape: "pill",
+        })
+
+        // google.accounts.id.prompt()
+      }
+      
+    }, [handleGoogle]);
+  
   const [provider, setProvider] = useState("");
   const [profile, setProfile] = useState<any>();
-
-  const onLoginStart = useCallback(() => {
-    alert("login start");
-  }, []);
 
   const onLogoutSuccess = useCallback(() => {
     setProfile(null);
@@ -59,12 +82,11 @@ const Auth = () => {
               <h1 className="title">Welcome to P3</h1>
               <p>Login with your P3 account to continue</p>
             </div>
-
-            <LoginSocialGoogle
+            <div id='loginDiv' className="bg-gray" data-type="standard"></div>
+            {/* <LoginSocialGoogle
               isOnlyGetToken
               typeResponse="idToken"
-              access_type="offline"
-              prompt="consent"
+              
               client_id={import.meta.env.VITE_APP_GG_APP_ID || ""}
               onLoginStart={onLoginStart}
               onResolve={({ provider, data }: any) => {
@@ -78,7 +100,7 @@ const Auth = () => {
               }}
             >
               <GoogleLoginButton />
-            </LoginSocialGoogle>
+            </LoginSocialGoogle> */}
           </div>
         </div>
       )}
