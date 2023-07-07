@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/viper"
 	"html/template"
 	"net/http"
 
@@ -36,29 +37,35 @@ type EmailOptions struct {
 type NameEmail struct {
 	Email string `json:"email"`
 
-	Name  string `json:"name"`
+	Name string `json:"name"`
 }
 type BrevoData struct {
-	Sender []NameEmail `json:"sender"`
-	To     []NameEmail `json:"to"`
-	Subject string `json:"subject"`
-	HtmlContent string `json:"htmlContent"`
+	Sender      NameEmail   `json:"sender"`
+	To          []NameEmail `json:"to"`
+	Subject     string      `json:"subject"`
+	HtmlContent string      `json:"htmlContent"`
 }
 
 func InviteUser(invite InviteEmployee, emailOptions EmailOptions) {
 	client := &http.Client{}
-	tmpl, _ := template.ParseFiles("email.html")
+	tmpl, e := template.ParseFiles("utils/email.html")
+	fmt.Println(e)
 	var tpl bytes.Buffer
 	tmpl.Execute(&tpl, invite)
+	apikey, _ := viper.Get("brevoApiKey").(string)
 
 	body := tpl.String()
 	brevo := BrevoData{
-		Sender: []NameEmail{{Email:emailOptions.Sender}},
-		To: []NameEmail{{Email:emailOptions.Receiver}},
-		Subject : "Invitation to Join P3",
+		Sender:      NameEmail{Email: "ankit.aabad1@gmail.com", Name: "ankit"},
+		To:          []NameEmail{{Email: emailOptions.Receiver, Name: "add receiver name here"}},
+		Subject:     "Invitation to Join P3",
 		HtmlContent: body,
 	}
 	brevoOutput, _ := json.Marshal(brevo)
 	req, _ := http.NewRequest("POST", "https://api.brevo.com/v3/smtp/email", bytes.NewReader(brevoOutput))
-	client.Do(req)
+	req.Header.Set("api-key", apikey)
+
+	res, e := client.Do(req)
+	fmt.Println(res)
+
 }

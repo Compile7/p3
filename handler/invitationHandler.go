@@ -20,10 +20,12 @@ func NewInvitationHandler(router *echo.Echo, db *gorm.DB) {
 }
 
 func (h InvitationHandler) SendInvitation(ctx echo.Context) error {
-	org := ctx.Get("OrganisationName").(string)
-	user := ctx.Get("LoggeddInUserEmail").(string)
+	//org := ctx.Get("OrganisationName").(string)
+	//user := ctx.Get("LoggeddInUserEmail").(string)
+	org := "abc"
+	user := "ankit"
 	receiver := ctx.QueryParam("receiver")
 	utils.InviteUser(utils.InviteEmployee{Link: "www.google.com", Organisation: org}, utils.EmailOptions{Sender: user, Receiver: receiver})
-	ctx.String(http.StatusOK, "invitation sent")
+	return ctx.String(http.StatusOK, "invitation sent")
 
 }
