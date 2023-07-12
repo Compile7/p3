@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/go-playground/validator/v10"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"p3/db"
 	handlers "p3/handler"
+	"p3/utils"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
 )
 
 type CustomValidator struct {
@@ -23,7 +25,9 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
+	e.Use(utils.TokenVerify)
 	dbInstance := db.GetInstance()
+	handlers.NewAuthHandler(e, dbInstance)
 	handlers.NewEmployeeHandler(e, dbInstance)
 	handlers.NewOrganizationHandler(e, dbInstance)
 	err := e.Start(":1234")
