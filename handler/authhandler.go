@@ -45,16 +45,6 @@ func (h *AuthHandler) Login(c echo.Context) error {
 		if err := h.dbInstance.Create(emp).Error; err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
-	} else {
-
-		// if employee exist, check if employee is under any organization
-		if emp.OrgId == 0 {
-
-		}
-		// If employee under any organization
-
-		// If employee not under any organization
-
 	}
 
 	return c.JSON(http.StatusOK, emp)
