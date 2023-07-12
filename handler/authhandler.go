@@ -29,20 +29,32 @@ func (h *AuthHandler) Login(c echo.Context) error {
 
 	var emp *datamodels.Employee
 	// Get first matched record
+	// Check if employee already exist in db
 	h.dbInstance.Where("email = ?", emailId).First(&emp)
+	// If employee does not exist, create a new entry for employee
 	if emp == nil {
 
 		if mErr := h.dbInstance.AutoMigrate(&datamodels.Employee{}); mErr != nil {
 			return c.JSON(http.StatusBadRequest, mErr)
 		}
-		emp.ID = uuid.New()
-		emp.Email = c.Get("Email").(string)
-		emp.Name = c.Get("Name").(string)
-		emp.ProfilePicture = c.Get("ProfilePicture").(string)
-
+		emp.ID = uuid.New()                                   // new UUID
+		emp.Email = c.Get("Email").(string)                   // Email from token validation
+		emp.Name = c.Get("Name").(string)                     // Name from token validation
+		emp.ProfilePicture = c.Get("ProfilePicture").(string) // Profile Pic from token validation
+		emp.Role = "Admin"                                    // update role to admin to show "add organization" component
 		if err := h.dbInstance.Create(emp).Error; err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
+	} else {
+
+		// if employee exist, check if employee is under any organization
+		if emp.OrgId == 0 {
+
+		}
+		// If employee under any organization
+
+		// If employee not under any organization
+
 	}
 
 	return c.JSON(http.StatusOK, emp)
