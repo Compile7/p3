@@ -28,7 +28,7 @@ import { FALLBACK } from "../../utils";
 
 const Auth = () => {
   const { handleGoogle, loading} = useFetch(
-    "http://localhost:5152/login"
+    `${import.meta.env.VITE_APP_BACKEND_ENDPOINT}/login`
   );
 
   useEffect(() => {
