@@ -17,6 +17,7 @@ import { User } from "../User"; // component display user (see detail on /exampl
 //   //   AppleLoginButton,
 // } from "react-social-login-buttons";
 import useFetch from "../../Hooks/useFetch";
+import { FALLBACK } from "../../utils";
 
 // import { ReactComponent as PinterestLogo } from './assets/pinterest.svg'
 // import { ReactComponent as TiktokLogo } from './assets/tiktok.svg'
@@ -26,7 +27,7 @@ import useFetch from "../../Hooks/useFetch";
 // const REDIRECT_URI = window.location.href;
 
 const Auth = () => {
-  const { handleGoogle, loading, error } = useFetch(
+  const { handleGoogle, loading} = useFetch(
     "http://localhost:5152/login"
   );
 
@@ -48,7 +49,7 @@ const Auth = () => {
         // shape: "pill",
       });
 
-      // google.accounts.id.prompt()
+      google.accounts.id.prompt()
     }
   }, [handleGoogle]);
 
@@ -63,7 +64,8 @@ const Auth = () => {
 
   return (
     <>
-      {provider && profile ? (
+    {loading?(FALLBACK):
+      provider && profile ? (
         <User
           provider={provider}
           profile={profile}

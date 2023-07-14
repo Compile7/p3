@@ -1,1 +1,0 @@
-export const isLoggedIn=()=>!!localStorage.getItem("P3AccessToken")

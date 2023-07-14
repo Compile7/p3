@@ -1,17 +1,19 @@
 import React from 'react';
-import { Navigate, Route, RouteProps, useLocation } from 'react-router-dom';
+import { Navigate, RouteProps, useLocation } from 'react-router-dom';
 import { isLoggedIn } from '../../utils/index';
 
 export const ProtectedRoute: React.FC<RouteProps> = (props) => {
     const { pathname, search } = useLocation();
-
-    if (isLoggedIn()) {
-        const { children, ...otherProps } = props;
-        return <Route {...otherProps}>{children as any}</Route>;
-    } else
+    const { children} = props;
+    if (!isLoggedIn()) {
+        
         return search ? (
-            <Navigate replace to={`/signin?redirect=${pathname}&${search.slice(1)} `} />
+            <Navigate to={`/?redirect=${pathname}&${search.slice(1)} `} replace/>
+            
         ) : (
-            <Navigate replace to={`/signin?redirect=${pathname}`} />
+            <Navigate to={`/?redirect=${pathname}`} replace/>
+           
         );
+    } else
+        return children
 };
