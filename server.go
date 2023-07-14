@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"github.com/labstack/echo/v4"
-	"github.com/spf13/viper"
 	"p3/db"
 	handlers "p3/handler"
 	"p3/utils"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 )
 
 type CustomValidator struct {
@@ -37,6 +39,10 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 
 func main() {
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		// AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 	e.Validator = &CustomValidator{validator: validator.New()}
 	e.Use(utils.TokenVerify)
 	viper.SetConfigFile(".env")

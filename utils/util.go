@@ -5,12 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/viper"
 	"html/template"
 	"net/http"
 	"p3/entities"
 	cErr "p3/err"
+	"strings"
 	"time"
+
+	"github.com/spf13/viper"
 
 	"github.com/labstack/echo/v4"
 	"github.com/mitchellh/mapstructure"
@@ -19,8 +21,16 @@ import (
 
 func TokenVerify(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		SocialClientKey := "327238763639-da8uschea6n56fvnmu47o8ve9r65eee3.apps.googleusercontent.com"
-		token := c.Request().Header.Get("Authorization")
+
+		SocialClientKey := "261940944085-n7a3smonr755otm67936q0rl169njkir.apps.googleusercontent.com"
+		reqToken := c.Request().Header.Get("Authorization")
+		splitToken := strings.Split(reqToken, "Bearer")
+		if len(splitToken) != 2 {
+			return GetError(cErr.InvalidToken)
+		}
+
+		token := strings.TrimSpace(splitToken[1])
+
 		if token == "" {
 			return GetError(cErr.TokenMissing)
 			//return c.JSON(http.StatusForbidden, "fxdbfgsb")
@@ -68,6 +78,7 @@ func TokenVerify(next echo.HandlerFunc) echo.HandlerFunc {
 			//handle error
 			return echo.ErrBadRequest
 		}
+
 		c.Set("Email", SocialClaims.Email)
 		c.Set("Name", SocialClaims.FullName)
 		c.Set("ProfilePicture", SocialClaims.ProfilePicture)
