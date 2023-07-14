@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"p3/datamodels"
+	cErr "p3/err"
 )
 
 type OrganizationHandler struct {
@@ -22,7 +23,7 @@ func NewOrganizationHandler(router *echo.Echo, db *gorm.DB) {
 func (h *OrganizationHandler) AddOrg(c echo.Context) error {
 	var e datamodels.Organization
 	err := c.Bind(&e)
-	customError := err.CustomError{}
+	customError := cErr.CustomError{}
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid post body")
 	}

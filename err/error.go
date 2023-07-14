@@ -1,4 +1,4 @@
-package err
+package cErr
 
 type CustomError struct {
 	Status  int    `json:"Status,omitempty"`
