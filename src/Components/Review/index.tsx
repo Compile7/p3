@@ -1,14 +1,7 @@
-// import "./review.scss";
-import Rating from "react-rating";
 import Header from "../Header";
 import Footer from "../Footer";
 
 const Review = () => {
-  const SVGIcon = (props: any) => (
-    <svg className={props.className} pointerEvents="none">
-      <use xlinkHref={props.href} />
-    </svg>
-  );
   return (
     <>
       <Header />
@@ -21,20 +14,14 @@ const Review = () => {
           <form action="">
             <div className="form-control">
               <label htmlFor="review">Enter Review</label>
-              <textarea name="review" id="review"></textarea>
+              <textarea name="review" id="review" required></textarea>
             </div>
             <div className="form-control">
               <label htmlFor="review">Add Rating</label>
+              <input type="number" max={10} min={1} />
             </div>
             <div className="form-control">
               <button type="submit">Submit Review</button>
-
-              <Rating
-                emptySymbol={
-                  <SVGIcon href="#icon-star-empty" className="icon" />
-                }
-                fullSymbol={<SVGIcon href="#icon-star-full" className="icon" />}
-              />
             </div>
           </form>
         </div>

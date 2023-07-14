@@ -26,33 +26,32 @@ import useFetch from "../../Hooks/useFetch";
 // const REDIRECT_URI = window.location.href;
 
 const Auth = () => {
-    const { handleGoogle, loading, error } = useFetch(
-      "http://localhost:5152/login"
-    );
-  
-    useEffect(() => {
-      /* global google */
-      const google = (window as any).google
-      if (google) {
-        google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_APP_GG_APP_ID,
-          callback: handleGoogle,
-        });
-  
-        google.accounts.id.renderButton(document.getElementById("loginDiv"), {
-          // type: "standard",
-          theme: "filled_blue",
-          // size: "small",
-          text: "signin_with",
-          
-          // shape: "pill",
-        })
+  const { handleGoogle, loading, error } = useFetch(
+    "http://localhost:5152/login"
+  );
 
-        // google.accounts.id.prompt()
-      }
-      
-    }, [handleGoogle]);
-  
+  useEffect(() => {
+    /* global google */
+    const google = (window as any).google;
+    if (google) {
+      google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_APP_GG_APP_ID,
+        callback: handleGoogle,
+      });
+
+      google.accounts.id.renderButton(document.getElementById("loginDiv"), {
+        // type: "standard",
+        theme: "filled_blue",
+        // size: "small",
+        text: "signin_with",
+
+        // shape: "pill",
+      });
+
+      // google.accounts.id.prompt()
+    }
+  }, [handleGoogle]);
+
   const [provider, setProvider] = useState("");
   const [profile, setProfile] = useState<any>();
 
@@ -80,9 +79,9 @@ const Auth = () => {
             </div>
             <div className="header">
               <h1 className="title">Welcome to P3</h1>
-              <p>Login with your P3 account to continue</p>
+              <p>Login with your Google account to continue</p>
             </div>
-            <div id='loginDiv' className="bg-gray" data-type="standard"></div>
+            <div id="loginDiv" className="bg-gray" data-type="standard"></div>
             {/* <LoginSocialGoogle
               isOnlyGetToken
               typeResponse="idToken"
