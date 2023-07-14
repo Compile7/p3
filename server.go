@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	"net/http"
 	"p3/db"
 	handlers "p3/handler"
 )
@@ -15,7 +15,18 @@ type CustomValidator struct {
 func (cv *CustomValidator) Validate(i interface{}) error {
 	if err := cv.validator.Struct(i); err != nil {
 		// Optionally, you could return the error to give each route more control over the status code
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		var errString string
+		if err != nil {
+			for _, e := range err.(validator.ValidationErrors) {
+				if e.Tag() == "notblank" {
+					errString += fmt.Sprintf("The value of %s can not be null or empty.", e.Field())
+				} else {
+					errString += fmt.Sprintf("The %s is a required parameter.", e.Field())
+				}
+			}
+			return fmt.Errorf(errString)
+		}
+		return nil
 	}
 	return nil
 }

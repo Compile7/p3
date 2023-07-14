@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"p3/datamodels"
+	"p3/errors"
 )
 
 type OrganizationHandler struct {
@@ -22,23 +23,35 @@ func NewOrganizationHandler(router *echo.Echo, db *gorm.DB) {
 func (h *OrganizationHandler) AddOrg(c echo.Context) error {
 	var e datamodels.Organization
 	err := c.Bind(&e)
+	customError := errors.CustomError{}
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid post body")
 	}
 	if err = c.Validate(e); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		customError.Message = err.Error()
+		return c.JSON(http.StatusBadRequest, customError)
 	}
 
 	if h.dbInstance == nil {
-		return c.JSON(http.StatusBadRequest, "Connection Error")
+		customError.Message = "Connection Error"
+		return c.JSON(http.StatusBadRequest, customError)
+	}
+	var o *datamodels.Organization
+	h.dbInstance.Where("created_by = ?", "hemant.manwani@loginradius.com").First(&o)
+	if o != nil {
+		customError.Message = "You have already created the organization."
+		return c.JSON(http.StatusBadRequest, customError)
 	}
 	if mErr := h.dbInstance.AutoMigrate(&datamodels.Organization{}); mErr != nil {
-		return c.JSON(http.StatusBadRequest, mErr)
+		customError.Message = mErr.Error()
+		return c.JSON(http.StatusBadRequest, customError)
 	}
 	e.IsActive = true
 	e.IsDeleted = false
+	e.CreatedBy = "hemant.manwani@loginradius.com"
 	if err = h.dbInstance.Create(e).Error; err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		customError.Message = err.Error()
+		return c.JSON(http.StatusBadRequest, customError)
 	}
 	return c.JSON(http.StatusOK, e)
 	//return c.JSON(http.StatusOK, e)

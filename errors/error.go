@@ -1,11 +1,11 @@
 package errors
 
 type CustomError struct {
-	status int
-	msg    string
+	Status  int    `json:"Status,omitempty"`
+	Message string `json:"Message,omitempty"`
 }
 
 var (
-	ErrOrgnaisationRequired = CustomError{status: 403, msg: "You are not a part of any organisation"}
-	ErrInvalidToken         = CustomError{status: 403, msg: "invalid token"}
+	ErrOrgnaisationRequired = CustomError{Status: 403, Message: "You are not a part of any organisation"}
+	ErrInvalidToken         = CustomError{Status: 403, Message: "invalid token"}
 )
