@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"p3/datamodels"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -37,7 +36,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 		if mErr := h.dbInstance.AutoMigrate(&datamodels.Employee{}); mErr != nil {
 			return c.JSON(http.StatusBadRequest, mErr)
 		}
-		emp.ID = uuid.New()                                   // new UUID
+		//emp.ID = uuid.New()                                   // new UUID
 		emp.Email = c.Get("Email").(string)                   // Email from token validation
 		emp.Name = c.Get("Name").(string)                     // Name from token validation
 		emp.ProfilePicture = c.Get("ProfilePicture").(string) // Profile Pic from token validation
