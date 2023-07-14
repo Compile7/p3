@@ -92,6 +92,11 @@ img {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  border: 1px solid;
+  min-width: 120px;
+  justify-content: center;
   &.sm {
     min-height: 32px;
     padding: 0 16px;
@@ -100,10 +105,34 @@ img {
   &.btn-primary {
     background-color: $blue-600;
     color: $white;
+    border-color: $blue-600;
     &:hover {
       background-color: darken($blue-600, 5%);
     }
   }
+  &.btn-secondary {
+    background-color: $white;
+    color: $blue-600;
+    border-color: $blue-600;
+    &:hover {
+      background-color: darken($blue-600, 5%);
+      color: $white;
+    }
+  }
+  &.btn-ghost {
+    background-color: $white;
+    color: $blue-600;
+    border-color: $white;
+    &:hover {
+      background-color: $blue-100;
+      border-color: $blue-100;
+    }
+  }
+}
+.btn-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 select {
   min-height: 48px;
@@ -156,7 +185,8 @@ header {
   }
 }
 main {
-  height: calc(100vh - 162px);
+  // height: calc(100vh - 162px);
+  min-height: 569.2px;
   & > div {
     max-width: 1200px;
     margin: 0 auto;
@@ -193,8 +223,13 @@ main {
           border: 1px solid $gray-300;
           border-radius: 4px;
           height: 48px;
-          padding: 0 16px;
+          padding: 12px 16px;
           resize: vertical;
+          font-family: $font-stack;
+          font-size: 15px;
+          &::placeholder {
+            color: $gray-500;
+          }
         }
       }
     }
@@ -375,4 +410,117 @@ table th {
       }
     }
   }
+}
+
+// onboarding
+.onboarding {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  & > div {
+    width: calc((100% / 2) - (32px / 2));
+    .steps {
+      font-size: 14px;
+      font-weight: 600;
+      color: $gray-500;
+      margin-bottom: 8px;
+    }
+    .import-data {
+      background-color: $gray-100;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      .help-text {
+        width: calc(100% - 256px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        svg {
+          width: 48px;
+          height: 48px;
+        }
+        span {
+          width: calc(100% - 56px);
+          font-size: 14px;
+          color: $gray-700;
+        }
+      }
+    }
+    h1 {
+      font-size: 48px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0 0 12px;
+    }
+    p {
+      line-height: 1.75;
+    }
+  }
+}
+button {
+  padding: 0;
+  border: none;
+  outline: 0;
+}
+// google button
+
+.g-sign-in-button {
+  background-color: #4285f4;
+  color: #fff;
+  border-radius: 1px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+  transition:
+    background-color 0.218s,
+    border-color 0.218s,
+    box-shadow 0.218s;
+  display: flex;
+  align-items: center;
+}
+.g-sign-in-button:hover {
+  cursor: pointer;
+  -webkit-box-shadow: 0 0 3px 3px rgba(66, 133, 244, 0.3);
+  box-shadow: 0 0 3px 3px rgba(66, 133, 244, 0.3);
+}
+.g-sign-in-button:active {
+  background-color: #3367d6;
+  transition: background-color 0.2s;
+}
+.g-sign-in-button .content-wrapper {
+  height: 100%;
+  width: 100%;
+  border: 1px solid transparent;
+}
+.g-sign-in-button svg {
+  width: 20px;
+  height: 20px;
+}
+.g-sign-in-button .logo-wrapper {
+  background: $white;
+  width: 48px;
+  height: 48px;
+  border-radius: 1px;
+  display: flex;
+  border: 1px solid #4285f4;
+  justify-content: center;
+  align-items: center;
+  svg {
+    vertical-align: middle;
+  }
+}
+.g-sign-in-button .text-container {
+  font-weight: 500;
+  letter-spacing: 0.21px;
+  font-size: 16px;
+  line-height: 48px;
+  vertical-align: top;
+  border: none;
+  display: inline-block;
+  text-align: center;
+  padding: 0 16px;
+  font-family: $font-stack;
+  font-weight: 500;
 }

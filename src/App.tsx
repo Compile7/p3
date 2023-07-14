@@ -7,24 +7,50 @@ import Team from "./Components/Team";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { isLoggedIn } from "./utils";
 import useFetch from "./Hooks/useFetch";
+import Onboarding from "./Components/Onboarding";
 // import { useStateContext } from "./Contexts/contextProvider";
 function App() {
-
-   if (isLoggedIn()){
-    const { handleGoogle } = useFetch(
-      "http://localhost:5152/login"
-    );
-    handleGoogle({credential: localStorage.getItem("P3AccessToken")});
-  
-   }
+  if (isLoggedIn()) {
+    const { handleGoogle } = useFetch("http://localhost:5152/login");
+    handleGoogle({ credential: localStorage.getItem("P3AccessToken") });
+  }
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route index path="/" element={<Auth />} />
-          <Route path="/add-review" element={<ProtectedRoute ><Review /></ProtectedRoute>} />
-          <Route path="/team" element={<ProtectedRoute ><Team /></ProtectedRoute>} />
-          <Route path="/view-review" element={<ProtectedRoute ><ViewReview /></ProtectedRoute>} />
+          <Route
+            path="/add-review"
+            element={
+              <ProtectedRoute>
+                <Review />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/team"
+            element={
+              <ProtectedRoute>
+                <Team />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-review"
+            element={
+              <ProtectedRoute>
+                <ViewReview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/onboarding"
+            element={
+              <ProtectedRoute>
+                <Onboarding />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
