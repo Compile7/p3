@@ -4,7 +4,7 @@ import Auth from "./Components/Auth";
 import Review from "./Components/Review";
 import ViewReview from "./Components/ViewReview";
 import Team from "./Components/Team";
-import { ProtectedRoute } from "./Components/ProtectedRoute";
+// import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { isLoggedIn } from "./utils";
 import useFetch from "./Hooks/useFetch";
 import Onboarding from "./Components/Onboarding";
@@ -22,33 +22,33 @@ function App() {
           <Route
             path="/add-review"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <Review />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/team"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <Team />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/view-review"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <ViewReview />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/onboarding"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <Onboarding />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
         </Routes>
