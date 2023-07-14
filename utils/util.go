@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"net/http"
 	"p3/entities"
+	cErr "p3/err"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -18,15 +19,21 @@ import (
 
 func TokenVerify(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		SocialClientKey := "711686112966-qme1urtstdo0thlv10v0rjv62nelpf5r.apps.googleusercontent.com"
+		SocialClientKey := "327238763639-da8uschea6n56fvnmu47o8ve9r65eee3.apps.googleusercontent.com"
 		token := c.Request().Header.Get("Authorization")
+		if token == "" {
+			return GetError(cErr.TokenMissing)
+			//return c.JSON(http.StatusForbidden, "fxdbfgsb")
+		}
 		payload, err := idtoken.Validate(context.Background(), token, SocialClientKey)
 		if err != nil {
-
+			return GetError(cErr.InvalidToken)
 		}
 		var SocialClaims entities.SocialTokenClaims
-		mapstructure.Decode(payload.Claims, &SocialClaims)
-
+		mapErr := mapstructure.Decode(payload.Claims, &SocialClaims)
+		if mapErr != nil {
+			return GetError(cErr.Mapping)
+		}
 		fmt.Println(payload)
 
 		now := time.Now().UTC().Unix()
@@ -57,7 +64,7 @@ func TokenVerify(next echo.HandlerFunc) echo.HandlerFunc {
 			//handle error
 			return echo.ErrBadRequest
 		}
-		if !SocialClaims.EmailNotVerified() {
+		if SocialClaims.EmailNotVerified() {
 			//handle error
 			return echo.ErrBadRequest
 		}
@@ -110,5 +117,8 @@ func InviteUser(invite InviteEmployee, emailOptions EmailOptions) {
 
 	res, e := client.Do(req)
 	fmt.Println(res)
+}
 
+func GetError(customError cErr.CustomError) error {
+	return echo.NewHTTPError(customError.Status, customError.Message)
 }

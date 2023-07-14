@@ -1,19 +1,19 @@
 package entities
 
 type SocialTokenClaims struct {
-	Audience        string `json:"aud"`
-	ClientKey       string `json:"azp"`
-	Email           string `json:"email"`
-	IsEmailVerified bool   `json:"email_verified"`
-	ExpiryTime      int64  `json:"exp"`
-	LastName        string `json:"family_name"`
-	FirstName       string `json:"given_name"`
-	IssueTime       int64  `json:"iat"`
-	Issuer          string `json:"iss"`
-	Identifier      string `json:"jti"`
-	FullName        string `json:"name"`
-	NotBeforeTime   int64  `json:"nbf"`
-	ProfilePicture  string `json:"picture"`
+	Audience        string `mapstructure:"aud"`
+	ClientKey       string `mapstructure:"azp"`
+	Email           string `mapstructure:"email"`
+	IsEmailVerified bool   `mapstructure:"email_verified"`
+	ExpiryTime      int64  `mapstructure:"exp"`
+	LastName        string `mapstructure:"family_name"`
+	FirstName       string `mapstructure:"given_name"`
+	IssueTime       int64  `mapstructure:"iat"`
+	Issuer          string `mapstructure:"iss"`
+	Identifier      string `mapstructure:"jti"`
+	FullName        string `mapstructure:"name"`
+	NotBeforeTime   int64  `mapstructure:"nbf"`
+	ProfilePicture  string `mapstructure:"picture"`
 }
 
 func (c *SocialTokenClaims) IsNotExpired(now int64) bool {

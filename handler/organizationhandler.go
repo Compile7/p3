@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"p3/datamodels"
 	cErr "p3/err"
+	"p3/utils"
 )
 
 type OrganizationHandler struct {
@@ -18,29 +19,33 @@ func NewOrganizationHandler(router *echo.Echo, db *gorm.DB) {
 	}
 	router.POST("/organization", handler.AddOrg)
 	router.GET("/organization", handler.GetOrg)
+	router.PUT("/organization", handler.EditOrgName)
 }
 
 func (h *OrganizationHandler) AddOrg(c echo.Context) error {
 	var e datamodels.Organization
 	err := c.Bind(&e)
+	email := c.Get("Email").(string)
+	if email == "" {
+		return utils.GetError(cErr.InvalidEmail)
+	}
 	customError := cErr.CustomError{}
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid post body")
+		return utils.GetError(cErr.InvalidPostBody)
 	}
 	if err = c.Validate(e); err != nil {
 		customError.Message = err.Error()
+		//return utils.GetError(c, customError)
 		return c.JSON(http.StatusBadRequest, customError)
 	}
 
 	if h.dbInstance == nil {
-		customError.Message = "Connection Error"
-		return c.JSON(http.StatusBadRequest, customError)
+		return utils.GetError(cErr.ConnectionError)
 	}
 	var o *datamodels.Organization
-	h.dbInstance.Where("created_by = ?", "hemant.manwani@loginradius.com").First(&o)
-	if o != nil {
-		customError.Message = "You have already created the organization."
-		return c.JSON(http.StatusBadRequest, customError)
+	h.dbInstance.Where("created_by = ?", email).First(&o)
+	if o.Name != "" && o.IsActive {
+		return utils.GetError(cErr.OrgAlreadyExist)
 	}
 	if mErr := h.dbInstance.AutoMigrate(&datamodels.Organization{}); mErr != nil {
 		customError.Message = mErr.Error()
@@ -48,8 +53,8 @@ func (h *OrganizationHandler) AddOrg(c echo.Context) error {
 	}
 	e.IsActive = true
 	e.IsDeleted = false
-	e.CreatedBy = "hemant.manwani@loginradius.com"
-	if err = h.dbInstance.Create(e).Error; err != nil {
+	e.CreatedBy = email
+	if err = h.dbInstance.Create(&e).Error; err != nil {
 		customError.Message = err.Error()
 		return c.JSON(http.StatusBadRequest, customError)
 	}
@@ -58,15 +63,47 @@ func (h *OrganizationHandler) AddOrg(c echo.Context) error {
 }
 func (h *OrganizationHandler) GetOrg(c echo.Context) error {
 
-	emailId := c.QueryParams().Get("email")
+	email := c.Get("Email").(string)
+	if email == "" {
+		return utils.GetError(cErr.InvalidEmail)
+	}
 	if h.dbInstance == nil {
-		return c.JSON(http.StatusBadRequest, "Connection Error")
+		return utils.GetError(cErr.ConnectionError)
 	}
 	var o *datamodels.Organization
 	// Get first matched record
-	h.dbInstance.Where("created_by = ?", emailId).First(&o)
-	if o == nil {
-		return c.JSON(http.StatusForbidden, "Data not found")
+	h.dbInstance.Where("created_by = ?", email).Select([]string{"name", "created_at", "updated_at", "created_by"}).First(&o)
+	if o == nil || o.Name == "" {
+		return utils.GetError(cErr.DataNotFound)
 	}
-	return c.JSON(http.StatusForbidden, o)
+	return c.JSON(http.StatusOK, o)
+}
+func (h *OrganizationHandler) EditOrgName(c echo.Context) error {
+
+	email := c.Get("Email").(string)
+	if email == "" {
+		return utils.GetError(cErr.InvalidEmail)
+	}
+	if h.dbInstance == nil {
+		return utils.GetError(cErr.ConnectionError)
+	}
+	var e datamodels.EditOrganization
+	err := c.Bind(&e)
+	if err != nil {
+		return utils.GetError(cErr.InvalidPostBody)
+	}
+	customError := cErr.CustomError{}
+	if err = c.Validate(e); err != nil {
+		customError.Message = err.Error()
+		return c.JSON(http.StatusBadRequest, customError)
+	}
+	var o *datamodels.Organization
+	// Get first matched record
+	h.dbInstance.Where("created_by = ?", email).First(&o)
+	if o == nil || o.Name == "" {
+		return utils.GetError(cErr.DataNotFound)
+	}
+	o.Name = e.Name
+	h.dbInstance.Save(o)
+	return c.JSON(http.StatusOK, o)
 }
