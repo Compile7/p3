@@ -4,15 +4,16 @@ import Auth from "./Components/Auth";
 import Review from "./Components/Review";
 import ViewReview from "./Components/ViewReview";
 import Team from "./Components/Team";
+import { ProtectedRoute } from "./Components/ProtectedRoute";
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route index path="/" element={<Auth />} />
-          <Route path="/add-review" element={<Review />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/view-review" element={<ViewReview />} />
+          <ProtectedRoute path="/add-review" element={<Review />} />
+          <ProtectedRoute path="/team" element={<Team />} />
+          <ProtectedRoute path="/view-review" element={<ViewReview />} />
         </Routes>
       </BrowserRouter>
     </>
