@@ -3,23 +3,34 @@
 ::after {
   box-sizing: border-box;
 }
+$font-stack: "Poppins", sans-serif;
 $white: #ffffff;
 
 $black: #0f172a;
+
+// gray tone
+$gray-100: #f1f5f9;
 $gray-200: #e2e8f0;
 $gray-300: #cbd5e1;
+$gray-500: #64748b;
 $gray-600: #475569;
 $gray-700: #334155;
 
+//Brand tone
 $blue-600: #2563eb;
 $blue-700: #1d4ed8;
+
+// badge
+$green-500: #22c55e;
+$red-600: #dc2626;
+$yellow-500: #eab308;
 
 html,
 body {
   min-height: 100%;
 }
 :root {
-  font-family: "Poppins", sans-serif;
+  font-family: $font-stack;
   font-weight: 400;
   // color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -56,6 +67,9 @@ p {
   margin: 0;
   color: $gray-700;
 }
+img {
+  vertical-align: middle;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: $gray-600;
@@ -63,6 +77,52 @@ p {
   }
   a:hover {
     color: #747bff;
+  }
+}
+.btn {
+  outline: none;
+  border: none;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: $font-stack;
+  width: fit-content;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  line-height: 1;
+  &.sm {
+    min-height: 32px;
+    padding: 0 16px;
+    font-size: 14px;
+  }
+  &.btn-primary {
+    background-color: $blue-600;
+    color: $white;
+    &:hover {
+      background-color: darken($blue-600, 5%);
+    }
+  }
+}
+select {
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: $font-stack;
+  width: fit-content;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: $blue-600;
+  &.sm {
+    min-height: 32px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+  &.primary {
+    border-color: $blue-600;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
   }
 }
 #root {
@@ -102,6 +162,9 @@ main {
     padding: 56px 24px;
     .header {
       margin-bottom: 48px;
+      p {
+        max-width: 600px;
+      }
     }
     form {
       display: flex;
@@ -127,19 +190,6 @@ main {
           padding: 0 16px;
           resize: vertical;
         }
-        button {
-          background-color: $blue-600;
-          color: $white;
-          outline: none;
-          border: none;
-          min-height: 48px;
-          padding: 0 24px;
-          border-radius: 4px;
-          font-size: 16px;
-          font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-          width: fit-content;
-          cursor: pointer;
-        }
       }
     }
   }
@@ -153,5 +203,135 @@ footer {
   & > div {
     width: 100%;
     text-align: center;
+  }
+}
+
+// table css
+table {
+  border: 1px solid $gray-300;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: auto;
+  border-radius: 8px;
+}
+
+table caption {
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
+}
+
+table tr {
+  border: 1px solid $gray-300;
+  padding: 0.35em;
+}
+
+table th,
+table td {
+  padding: 0.85em 1.5em;
+  text-align: left;
+}
+
+table th {
+  font-size: 1rem;
+  text-transform: capitalize;
+  font-weight: 500;
+  background-color: $gray-100;
+  color: $gray-700;
+  padding: 1em 1.5em;
+}
+
+@media screen and (max-width: 600px) {
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3em;
+  }
+
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: 0.625em;
+  }
+
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    text-align: right;
+  }
+
+  table td::before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+}
+
+.table {
+  .user-detail {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+      color: $gray-700;
+      // max-width: 75%;
+      // overflow: hidden;
+      // text-wrap: nowrap;
+      // text-overflow: ellipsis;
+    }
+    p {
+      font-size: 14px;
+      color: $gray-500;
+      margin: 0;
+    }
+  }
+}
+.badge {
+  display: inline-flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: $white;
+  min-width: 84px;
+  line-height: 1;
+  &.badge-success {
+    background: $green-500;
+  }
+  &.badge-error {
+    background: $red-600;
+  }
+  &.badge-wraning {
+    background: $yellow-500;
   }
 }

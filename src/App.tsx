@@ -10,7 +10,7 @@ function App() {
         <Routes>
           <Route index path="/" element={<Auth />} />
           <Route path="/add-review" element={<Review />} />
-          <Route path="/add-review" element={<Team />} />
+          <Route path="/team" element={<Team />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -21,7 +21,9 @@ const Review = () => {
               <input type="number" max={10} min={1} />
             </div>
             <div className="form-control">
-              <button type="submit">Submit Review</button>
+              <button type="submit" className="btn btn-primary">
+                Submit Review
+              </button>
             </div>
           </form>
         </div>
