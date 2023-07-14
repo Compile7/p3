@@ -31,7 +31,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 	// Check if employee already exist in db
 	h.dbInstance.Where("email = ?", emailId).First(&emp)
 	// If employee does not exist, create a new entry for employee
-	if emp == nil {
+	if emp.Email == "" {
 
 		if mErr := h.dbInstance.AutoMigrate(&datamodels.Employee{}); mErr != nil {
 			return c.JSON(http.StatusBadRequest, mErr)

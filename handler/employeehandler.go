@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 	"net/http"
 	"p3/datamodels"
 	cErr "p3/err"
 	"p3/utils"
 	"strings"
+
+	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 type EmployeeHandler struct {
