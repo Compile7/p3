@@ -56,3 +56,18 @@ func (h *EmployeeHandler) GetEmployee(c echo.Context) error {
 	return c.JSON(http.StatusOK, emp)
 
 }
+func (h *EmployeeHandler) GetAllEmployees(c echo.Context) error {
+
+	emailId := c.QueryParams().Get("email")
+	if h.dbInstance == nil {
+		return c.JSON(http.StatusBadRequest, "Connection Error")
+	}
+	var emp *datamodels.Employee
+	// Get first matched record
+	h.dbInstance.Where("email = ?", emailId).First(&emp)
+	if emp == nil {
+		return c.JSON(http.StatusForbidden, "Data not found")
+	}
+	return c.JSON(http.StatusOK, emp)
+
+}

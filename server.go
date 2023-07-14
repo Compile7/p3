@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 	"p3/db"
 	handlers "p3/handler"
 )
@@ -34,8 +35,14 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
+	viper.SetConfigFile(".env")
+
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Printf("Error reading config file, %s", err)
+	}
 	dbInstance := db.GetInstance()
 	handlers.NewEmployeeHandler(e, dbInstance)
+	handlers.NewInvitationHandler(e, dbInstance)
 	handlers.NewOrganizationHandler(e, dbInstance)
 	err := e.Start(":1234")
 	if err != nil {
