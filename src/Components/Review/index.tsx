@@ -9,11 +9,14 @@ const Review = () => {
   console.log(params.name)
 
   const [loading, setLoading] = useState(false)
-
+  console.log(loading)
   const addReview = ()=>{
 
     setLoading(true)
 
+    //content Validation
+
+    
     //api call for review
 
     console.log("API call for add review")

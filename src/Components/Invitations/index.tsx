@@ -12,7 +12,8 @@ const [email, setEmail] = useState("")
 const { profile} = useStateContext();
   useEffect(() => {
     //fetch team list
-    
+    console.log(loading)
+    console.log(profile)
     return () => {
       
     }
@@ -165,6 +166,7 @@ const { profile} = useStateContext();
                       required
                       placeholder="Ex. hitesh@loginradius.com, ankit@loginradius.com"
                       style={{width:'100%', height:'60px'}}
+                      onChange={(e)=>setEmail(e.target.value)}
                     ></textarea>
                   </div>
           <div className="form-control">

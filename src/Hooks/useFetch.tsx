@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useStateContext } from "../Contexts/contextProvider";
-import { Navigate, useNavigate } from "react-router-dom";
+
 
 const useFetch = (url:string) => {
   const [loading, setLoading] = useState(false);

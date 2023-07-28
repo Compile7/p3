@@ -15,7 +15,7 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const { profile} = useStateContext();
   useEffect(() => {
-
+    console.log(loading)
     console.log(profile.OrgId)
     if(profile && profile.OrgId !==0){
 
