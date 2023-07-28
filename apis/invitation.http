@@ -1,4 +1,9 @@
-GET http://localhost:1234/invite?receiver=ankit.aabad1@gmail.com
+POST http://localhost:1234/invite
 Accept: application/json
+Content-Type: application/json
 
+{
+
+  "receivers": ["ankit.aabad1@gmail.com","ankit.aabad@loginradius.com"]
+}
 ###

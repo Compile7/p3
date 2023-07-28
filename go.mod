@@ -23,6 +23,7 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.5 // indirect
 	github.com/lib/pq v1.10.9 // indirect
+	github.com/matoous/go-nanoid/v2 v2.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.8.3 // indirect
 	go.opencensus.io v0.24.0 // indirect

@@ -7,6 +7,7 @@ type CustomError struct {
 
 var (
 	OrgnaisationRequired    = CustomError{Status: 403, Message: "You are not a part of any organisation"}
+	NotAllowed              = CustomError{Status: 403, Message: "You don't have required permissions to perform this operation"}
 	InvalidToken            = CustomError{Status: 403, Message: "invalid token"}
 	InvalidEmail            = CustomError{Status: 403, Message: "invalid email"}
 	TokenMissing            = CustomError{Status: 403, Message: "Missing auth token"}

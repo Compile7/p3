@@ -17,7 +17,7 @@ table "employees" {
     type = bigint
   }
   column "role" {
-    null = true
+    null = false
     type = text
   }
   column "managed_by" {
@@ -63,3 +63,4 @@ table "organizations" {
     columns = [column.id]
   }
 }
+

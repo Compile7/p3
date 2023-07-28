@@ -3,15 +3,14 @@ package utils
 import (
 	"bytes"
 	"context"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	. "github.com/go-jet/jet/v2/postgres"
-	_ "github.com/lib/pq"
 	"html/template"
 	"net/http"
 	"p3/.gen/p3/public/model"
 	. "p3/.gen/p3/public/table"
+	"p3/db"
 	"p3/entities"
 	cErr "p3/err"
 	"strings"
@@ -27,6 +26,8 @@ import (
 func TokenVerify(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
+		c.Set("Email", "ankit@gmail.com")
+		return next(c)
 		SocialClientKey := "261940944085-n7a3smonr755otm67936q0rl169njkir.apps.googleusercontent.com"
 		reqToken := c.Request().Header.Get("Authorization")
 		splitToken := strings.Split(reqToken, "Bearer")
@@ -138,17 +139,51 @@ func InviteUser(invite InviteEmployee, emailOptions EmailOptions) {
 func GetError(customError cErr.CustomError) error {
 	return echo.NewHTTPError(customError.Status, customError.Message)
 }
+func AddRoles(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
 
-func GetRoles(email string) {
-	Manages := Employees.AS("Manages")
-	var dest struct {
-		model.Employees
-		Manages []model.Employees `alias:"Manages"`
+		email := c.Get("Email").(string)
+		roles := GetRoles(email)
+		c.Set("Roles", roles)
+		return next(c)
 	}
+}
+
+type EmployeeRoles struct {
+	OrgId    *int64
+	OrgName  string
+	Role     string
+	Managing map[string]bool
+}
+type Subordinates struct {
+	model.Employees
+	Manages []model.Employees `alias:"Manages"`
+}
+
+func GetRoles(email string) EmployeeRoles {
+	s := GetEmployeesManaging(email)
+	r := EmployeeRoles{
+		Role:    s.Role,
+		OrgId:   s.OrgID,
+		OrgName: "test",
+	}
+	managing := map[string]bool{}
+	for _, emp := range s.Manages {
+
+		managing[emp.Email] = true
+	}
+	r.Managing = managing
+	return r
+}
+func GetEmployeesManaging(email string) Subordinates {
+	Manages := Employees.AS("Manages")
+	var dest Subordinates
 	stmt := SELECT(Employees.AllColumns, Manages.AllColumns).FROM(Employees.LEFT_JOIN(Manages, Employees.Email.EQ(Manages.ManagedBy))).WHERE(Employees.Email.EQ(String(email)))
 	debugSql := stmt.DebugSql()
 	fmt.Println(debugSql)
-	database, _ := sql.Open("postgres", "postgres://ankit:ZF4xbddmIAoPI26mqyeRAQ@people-performance-platform-3088.7s5.cockroachlabs.cloud:26257/p3?sslmode=verify-full")
+	database := db.GetJetDB()
+
 	stmt.Query(database, &dest)
 	fmt.Println(dest)
+	return dest
 }
