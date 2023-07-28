@@ -55,6 +55,7 @@ func main() {
 	handlers.NewEmployeeHandler(e, dbInstance)
 	handlers.NewInvitationHandler(e, dbInstance)
 	handlers.NewOrganizationHandler(e, dbInstance)
+	utils.GetRoles("ankit@gmail.com")
 	err := e.Start(":1234")
 	if err != nil {
 		panic(err)

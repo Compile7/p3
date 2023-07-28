@@ -3,10 +3,15 @@ package utils
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	. "github.com/go-jet/jet/v2/postgres"
+	_ "github.com/lib/pq"
 	"html/template"
 	"net/http"
+	"p3/.gen/p3/public/model"
+	. "p3/.gen/p3/public/table"
 	"p3/entities"
 	cErr "p3/err"
 	"strings"
@@ -132,4 +137,18 @@ func InviteUser(invite InviteEmployee, emailOptions EmailOptions) {
 
 func GetError(customError cErr.CustomError) error {
 	return echo.NewHTTPError(customError.Status, customError.Message)
+}
+
+func GetRoles(email string) {
+	Manages := Employees.AS("Manages")
+	var dest struct {
+		model.Employees
+		Manages []model.Employees `alias:"Manages"`
+	}
+	stmt := SELECT(Employees.AllColumns, Manages.AllColumns).FROM(Employees.LEFT_JOIN(Manages, Employees.Email.EQ(Manages.ManagedBy))).WHERE(Employees.Email.EQ(String(email)))
+	debugSql := stmt.DebugSql()
+	fmt.Println(debugSql)
+	database, _ := sql.Open("postgres", "postgres://ankit:ZF4xbddmIAoPI26mqyeRAQ@people-performance-platform-3088.7s5.cockroachlabs.cloud:26257/p3?sslmode=verify-full")
+	stmt.Query(database, &dest)
+	fmt.Println(dest)
 }
