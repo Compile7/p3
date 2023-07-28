@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.scss";
 import Auth from "./Components/Auth";
 import Review from "./Components/Review";
@@ -11,7 +11,7 @@ import Onboarding from "./Components/Onboarding";
 // import { useStateContext } from "./Contexts/contextProvider";
 function App() {
   if (isLoggedIn()) {
-    const { handleGoogle } = useFetch("http://localhost:5152/login");
+    const { handleGoogle } = useFetch(`${import.meta.env.VITE_APP_BACKEND_ENDPOINT}/login`);
     handleGoogle({ credential: localStorage.getItem("P3AccessToken") });
   }
   return (
@@ -22,15 +22,15 @@ function App() {
           <Route
             path="/add-review"
             element={
-              // <ProtectedRoute>
+              // <ProtectedRoute roleProtected>
                 <Review />
-              // </ProtectedRoute>
+              //  </ProtectedRoute>
             }
           />
           <Route
             path="/team"
             element={
-              // <ProtectedRoute>
+              // <ProtectedRoute roleProtected>
                 <Team />
               // </ProtectedRoute>
             }
@@ -46,11 +46,12 @@ function App() {
           <Route
             path="/onboarding"
             element={
-              // <ProtectedRoute>
+              // <ProtectedRoute roleProtected>
                 <Onboarding />
               // </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </>

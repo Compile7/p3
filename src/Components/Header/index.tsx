@@ -1,5 +1,17 @@
+import { useCallback } from "react";
 import Logo from "../../assets/logo.svg";
+import { useStateContext } from "../../Contexts/contextProvider";
+import { useNavigate } from "react-router-dom";
 const Header = () => {
+
+  const{setProfile} = useStateContext();
+  const navigate = useNavigate()
+  const onLogoutSuccess = useCallback(() => {
+    setProfile(null);
+    localStorage.removeItem("P3AccessToken")
+    navigate("/")
+  }, []);
+  
   return (
     <header>
       <div>
@@ -15,6 +27,9 @@ const Header = () => {
             </li>
             <li>
               <a href="#">Menu02</a>
+            </li>
+            <li>
+              <a href="#" onClick={onLogoutSuccess}>Logout</a>
             </li>
           </ul>
         </nav>

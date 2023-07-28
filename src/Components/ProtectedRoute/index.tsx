@@ -1,19 +1,32 @@
 import React from 'react';
 import { Navigate, RouteProps, useLocation } from 'react-router-dom';
 import { isLoggedIn } from '../../utils/index';
+import { useStateContext } from '../../Contexts/contextProvider';
 
-export const ProtectedRoute: React.FC<RouteProps> = (props) => {
+type ProtectedRouteProps = RouteProps & {
+    roleProtected?: boolean
+}
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
     const { pathname, search } = useLocation();
-    const { children} = props;
+    const { children } = props;
+    const { profile } = useStateContext();
     if (!isLoggedIn()) {
-        
+
         return search ? (
-            <Navigate to={`/?redirect=${pathname}&${search.slice(1)} `} replace/>
-            
+            <Navigate to={`/?redirect=${pathname}&${search.slice(1)} `} replace />
+
         ) : (
-            <Navigate to={`/?redirect=${pathname}`} replace/>
-           
+            <Navigate to={`/?redirect=${pathname}`} replace />
+
         );
-    } else
-        return children
+    } else if (props.roleProtected) {
+
+        return profile.Role === 'Admin' ? children : search ? (
+            <Navigate to={`/?redirect=${pathname}&${search.slice(1)} `} replace />
+
+        ) : (
+            <Navigate to={`/?redirect=${pathname}`} replace />
+
+        );
+    } else return children
 };

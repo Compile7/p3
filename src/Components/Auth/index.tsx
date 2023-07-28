@@ -1,36 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import {useEffect} from "react";
 import "./auth.scss";
 import Logo from "../../assets/logo.svg";
-import { User } from "../User"; // component display user (see detail on /example directory)
-// import { LoginSocialGoogle } from "reactjs-social-login";
-
-// // CUSTOMIZE ANY UI BUTTON
-// import {
-//   //   FacebookLoginButton,
-//   GoogleLoginButton,
-//   //   GithubLoginButton,
-//   //   AmazonLoginButton,
-//   //   InstagramLoginButton,
-//   //   LinkedInLoginButton,
-//   //   MicrosoftLoginButton,
-//   //   TwitterLoginButton,
-//   //   AppleLoginButton,
-// } from "react-social-login-buttons";
 import useFetch from "../../Hooks/useFetch";
 import { FALLBACK } from "../../utils";
-
-// import { ReactComponent as PinterestLogo } from './assets/pinterest.svg'
-// import { ReactComponent as TiktokLogo } from './assets/tiktok.svg'
-
-// REDIRECT URL must be same with URL where the (reactjs-social-login) components is locate
-// MAKE SURE the (reactjs-social-login) components aren't unmounted or destroyed before the ask permission dialog closes
-// const REDIRECT_URI = window.location.href;
+import { useStateContext } from "../../Contexts/contextProvider";
+import { Navigate } from "react-router-dom";
 
 const Auth = () => {
   const { handleGoogle, loading} = useFetch(
     `${import.meta.env.VITE_APP_BACKEND_ENDPOINT}/login`
   );
 
+  const {profile} = useStateContext();
   useEffect(() => {
     /* global google */
     const google = (window as any).google;
@@ -53,26 +34,11 @@ const Auth = () => {
     }
   }, [handleGoogle]);
 
-  const [provider, setProvider] = useState("");
-  const [profile, setProfile] = useState<any>();
-
-  const onLogoutSuccess = useCallback(() => {
-    setProfile(null);
-    setProvider("");
-    alert("logout success");
-  }, []);
-
   return (
     <>
-    {loading?(FALLBACK):
-      provider && profile ? (
-        <User
-          provider={provider}
-          profile={profile}
-          onLogout={onLogoutSuccess}
-        />
-      ) : (
-        <div className={`App ${provider && profile ? "hide" : ""}`}>
+    {loading?FALLBACK:
+      profile? <Navigate to={`/view-review` } replace/>:
+        <div className={`App ${profile ? "hide" : ""}`}>
           <div className="login">
             <div className="logo">
               <a href="/">
@@ -84,27 +50,9 @@ const Auth = () => {
               <p>Login with your Google account to continue</p>
             </div>
             <div id="loginDiv" className="bg-gray" data-type="standard"></div>
-            {/* <LoginSocialGoogle
-              isOnlyGetToken
-              typeResponse="idToken"
-              
-              client_id={import.meta.env.VITE_APP_GG_APP_ID || ""}
-              onLoginStart={onLoginStart}
-              onResolve={({ provider, data }: any) => {
-                console.log(provider);
-                console.log(data);
-                setProvider(provider);
-                setProfile(data);
-              }}
-              onReject={(err: any) => {
-                console.log(err);
-              }}
-            >
-              <GoogleLoginButton />
-            </LoginSocialGoogle> */}
           </div>
         </div>
-      )}
+      }
     </>
   );
 };
