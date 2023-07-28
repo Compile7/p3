@@ -31,13 +31,20 @@ const Auth = () => {
       });
 
       google.accounts.id.prompt()
+      console.log(google.accounts.id)
     }
   }, [handleGoogle]);
 
   return (
     <>
     {loading?FALLBACK:
-      profile? <Navigate to={`/view-review` } replace/>:
+      profile? profile.OrgId ===0?
+      <>{console.log("here")}
+      <Navigate replace to="/onboarding" />
+      </>:<> 
+      {console.log("there")}
+      <Navigate replace to="/view-review" />
+      </>:
         <div className={`App ${profile ? "hide" : ""}`}>
           <div className="login">
             <div className="logo">

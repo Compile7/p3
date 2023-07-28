@@ -10,6 +10,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
     const { pathname, search } = useLocation();
     const { children } = props;
     const { profile } = useStateContext();
+    console.log(profile)
     if (!isLoggedIn()) {
 
         return search ? (
@@ -21,7 +22,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
         );
     } else if (props.roleProtected) {
 
-        return profile.Role === 'Admin' ? children : search ? (
+        return profile?.Role === 'Admin' ? children : search ? (
             <Navigate to={`/?redirect=${pathname}&${search.slice(1)} `} replace />
 
         ) : (

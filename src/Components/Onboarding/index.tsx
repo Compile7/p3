@@ -1,13 +1,96 @@
 import Header from "../Header";
 import Footer from "../Footer";
 import onboarding from "../../assets/onboarding.png";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useStateContext } from "../../Contexts/contextProvider";
+
 const Onboarding = () => {
+
+
+  const [createOrg, setCreateOrg] = useState<any>(false)
+  const [organisationName, setOrganisationName] = useState<any>("")
+  const [loading,setLoading] = useState<any>(false)
+  const [inviteTeam, setInviteTeam] = useState<any>(false)
+  const navigate = useNavigate();
+  const { profile} = useStateContext();
+  useEffect(() => {
+
+    console.log(profile.OrgId)
+    if(profile && profile.OrgId !==0){
+
+      navigate('/view-review')
+    }
+    return () => {
+     
+    }
+  }, [profile])
+  
+  const createOrganization = (e:any)=>{
+    e.preventDefault();
+
+    setLoading(true)
+
+    console.log(organisationName)
+
+    //apicall with organization name
+
+    setLoading(false)
+    // setProfile(orgid)
+    setInviteTeam(true)
+  }
+  const inviteEmployees = (e:any) =>{
+    e.preventDefault();
+
+    setLoading(true)
+
+    console.log(organisationName)
+
+    //apicall with organization name
+
+    setLoading(false)
+    navigate("/invitations")
+  }
+  /**
+   * Callback after the API client is loaded. Loads the
+   * discovery doc to initialize the API.
+   */
+  
+  
+  // async function listConnectionNames() {
+  //   let response;
+  //   try {
+  //     // Fetch first 10 files
+  //     response = await gapi.client.people.people.connections.list({
+  //       'resourceName': 'people/me',
+  //       'pageSize': 10,
+  //       'personFields': 'names,emailAddresses',
+  //     });
+  //   } catch (err) {
+  //    console.log(err)
+  //   }
+  //   const connections = response.result.connections;
+  //   if (!connections || connections.length == 0) {
+  //     console.log("No connections")
+  //   }
+  //   // Flatten to string to display
+  //   const output = connections.reduce(
+  //       (str:any, person:any) => {
+  //         if (!person.names || person.names.length === 0) {
+  //           return `${str}Missing display name\n`;
+  //         }
+  //         return `${str}${person.names[0].displayName}\n`;
+  //       },
+  //       'Connections:\n');
+  //   console.log(output)
+  // }
   return (
     <>
       <Header />
       <main>
         <div>
           {/* Step 1 */}
+          {!createOrg?
           <div className="onboarding">
             <div className="description">
               <div className="header">
@@ -19,17 +102,19 @@ const Onboarding = () => {
                 </p>
               </div>
               <div>
-                <a href="#" className="btn btn-primary">
+                <button className="btn btn-primary" onClick={()=>setCreateOrg(true)}>
                   Create organization
-                </a>
+                </button>
               </div>
             </div>
             <div className="image">
               <img src={onboarding} alt="onboarding" />
             </div>
           </div>
-          {/* Step 2 */}
-          <div className="onboarding">
+          // {/* Step 2 */}
+            
+          :(!inviteTeam)?
+            <div className="onboarding">
             <div className="description">
               <div className="steps">
                 Step <span>1</span> of 2
@@ -45,10 +130,10 @@ const Onboarding = () => {
                 <form action="">
                   <div className="form-control">
                     <label htmlFor="organization_name">Organization name</label>
-                    <input type="text" id="organization_name" />
+                    <input type="text" id="organization_name" value={organisationName} onChange={(e:any)=>setOrganisationName(e.target.value)} />
                   </div>
                   <div className="form-control">
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn-primary" onClick={createOrganization}>
                       Next
                     </button>
                   </div>
@@ -60,7 +145,8 @@ const Onboarding = () => {
             </div>
           </div>
 
-          {/* Step 3 */}
+          // {/* Step 3 */}
+          :
           <div className="onboarding">
             <div className="description">
               <div className="steps">
@@ -75,7 +161,7 @@ const Onboarding = () => {
               </div>
               <div>
                 <div className="import-data">
-                  <div className="help-text">
+                  {/* <div className="help-text">
                     <svg
                       width="48"
                       height="48"
@@ -83,48 +169,48 @@ const Onboarding = () => {
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g clip-path="url(#clip0_32_166)">
+                      <g clipPath="url(#clip0_32_166)">
                         <path
                           d="M40 12V36C40 37.0609 39.5786 38.0783 38.8284 38.8284C38.0783 39.5786 37.0609 40 36 40H16C14.9391 40 13.9217 39.5786 13.1716 38.8284C12.4214 38.0783 12 37.0609 12 36V12C12 10.9391 12.4214 9.92172 13.1716 9.17157C13.9217 8.42143 14.9391 8 16 8H36C37.0609 8 38.0783 8.42143 38.8284 9.17157C39.5786 9.92172 40 10.9391 40 12Z"
                           stroke="#64748B"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M20 32H32"
                           stroke="#64748B"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M22 22C22 23.0609 22.4214 24.0783 23.1716 24.8284C23.9217 25.5786 24.9391 26 26 26C27.0609 26 28.0783 25.5786 28.8284 24.8284C29.5786 24.0783 30 23.0609 30 22C30 20.9391 29.5786 19.9217 28.8284 19.1716C28.0783 18.4214 27.0609 18 26 18C24.9391 18 23.9217 18.4214 23.1716 19.1716C22.4214 19.9217 22 20.9391 22 22Z"
                           stroke="#64748B"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M8 16H14"
                           stroke="#64748B"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M8 24H14"
                           stroke="#64748B"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M8 32H14"
                           stroke="#64748B"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                       </g>
                       <defs>
@@ -134,8 +220,8 @@ const Onboarding = () => {
                       </defs>
                     </svg>
                     <span>Quickly invite from your Google contact list</span>
-                  </div>
-                  <div className="google-btn">
+                  </div> */}
+                  {/* <div className="google-btn">
                     <button>
                       <div className="g-sign-in-button">
                         <div className="logo-wrapper">
@@ -165,11 +251,11 @@ const Onboarding = () => {
                           </svg>
                         </div>
                         <span className="text-container">
-                          <span>Import contacts</span>
+                          <span onClick={listConnectionNames}>Import contacts</span>
                         </span>
                       </div>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 <form action="">
                   <div className="form-control">
@@ -183,10 +269,10 @@ const Onboarding = () => {
                   </div>
                   <div className="form-control">
                     <div className="btn-group">
-                      <button type="submit" className="btn btn-primary">
+                      <button onClick={inviteEmployees} type="submit" className="btn btn-primary">
                         Add members
                       </button>
-                      <button type="submit" className="btn btn-ghost">
+                      <button onClick={()=>navigate('/team')} type="submit" className="btn btn-ghost">
                         Skip this step
                       </button>
                     </div>
@@ -198,6 +284,9 @@ const Onboarding = () => {
               <img src={onboarding} alt="onboarding" />
             </div>
           </div>
+          }
+          
+
         </div>
       </main>
       <Footer />

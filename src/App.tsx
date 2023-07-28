@@ -8,47 +8,70 @@ import Team from "./Components/Team";
 import { isLoggedIn } from "./utils";
 import useFetch from "./Hooks/useFetch";
 import Onboarding from "./Components/Onboarding";
+import { useEffect } from "react";
+import { ProtectedRoute } from "./Components/ProtectedRoute";
+import Invitations from "./Components/Invitations";
 // import { useStateContext } from "./Contexts/contextProvider";
-function App() {
-  if (isLoggedIn()) {
-    const { handleGoogle } = useFetch(`${import.meta.env.VITE_APP_BACKEND_ENDPOINT}/login`);
-    handleGoogle({ credential: localStorage.getItem("P3AccessToken") });
-  }
+const App=()=> {
+  const { handleGoogle } = useFetch(`${import.meta.env.VITE_APP_BACKEND_ENDPOINT}/login`);
+    
+    useEffect(() => {
+      console.log('reach')
+      if (isLoggedIn()) {
+        console.log("Working")
+        
+        handleGoogle({ credential: localStorage.getItem("P3AccessToken") });
+      }
+    
+      return () => {
+       
+      }
+    },[])
+    console.log('rea2ch')
+  
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route index path="/" element={<Auth />} />
           <Route
-            path="/add-review"
+            path="/:name/add-review"
             element={
-              // <ProtectedRoute roleProtected>
+              <ProtectedRoute roleProtected>
                 <Review />
-              //  </ProtectedRoute>
+               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/invitations"
+            element={
+              <ProtectedRoute roleProtected>
+                <Invitations />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/team"
             element={
-              // <ProtectedRoute roleProtected>
+              <ProtectedRoute roleProtected>
                 <Team />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/view-review"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <ViewReview />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/onboarding"
             element={
-              // <ProtectedRoute roleProtected>
+              <ProtectedRoute roleProtected>
                 <Onboarding />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
